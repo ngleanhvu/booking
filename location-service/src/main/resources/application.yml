@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: location-service
+  datasource:
+    username: ${LOCATION_DB_USERNAME}
+    password: ${LOCATION_DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/${LOCATION_DB_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+  data:
+    redis:
+      host: ${LOCATION_REDIS_HOST}
+      port: ${LOCATION_REDIS_PORT}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8009/eureka
+
+
+grpc:
+  server:
+    port: 9011
+
+page:
+  size: 10
+
+redis:
+  time-out: 2
+
+server:
+  port: 8011

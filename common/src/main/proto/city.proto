@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package com.ngleanhvu.common.proto;
+
+option java_package = "com.ngleanhvu.common.proto";
+option java_multiple_files = true;
+
+message City {
+  int32 id = 1;
+  string name = 2;
+}
+
+message CityRequestForCountryId {
+  int32 countryId = 1;
+}
+
+message CityRequest {
+  int32 cityId = 1;
+}
+
+message CityList {
+  repeated City cities = 1;
+}
+
+service CityService {
+  rpc GetAllCitiesByCountryId (CityRequestForCountryId) returns (CityList);
+  rpc GetCityById (CityRequest) returns (City);
+}

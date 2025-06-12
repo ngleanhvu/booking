@@ -1,0 +1,20 @@
+INSERT INTO country(id, code, name) VALUES (3,"JP", "Japan");
+INSERT INTO country(id, code, name) VALUES (4, "AG", "Arghentina");
+INSERT INTO country(id, code, name) VALUES (5, "FR", "France");
+INSERT INTO country(id, code, name) VALUES (6, "DE", "Germany");
+INSERT INTO country(id, code, name) VALUES (7, "IT", "Italy");
+INSERT INTO country(id, code, name) VALUES (8, "CN", "China");
+INSERT INTO country(id, code, name) VALUES (9, "IN", "India");
+INSERT INTO country(id, code, name) VALUES (10, "KR", "South Korea");
+INSERT INTO country(id, code, name) VALUES (11, "BR", "Brazil");
+INSERT INTO country(id, code, name) VALUES (12, "CA", "Canada");
+INSERT INTO country(id, code, name) VALUES (13, "AU", "Australia");
+INSERT INTO country(id, code, name) VALUES (14, "GB", "United Kingdom");
+INSERT INTO country(id, code, name) VALUES (15, "RU", "Russia");
+INSERT INTO country(id, code, name) VALUES (16, "MX", "Mexico");
+INSERT INTO country(id, code, name) VALUES (17, "ES", "Spain");
+INSERT INTO country(id, code, name) VALUES (18, "TH", "Thailand");
+INSERT INTO country(id, code, name) VALUES (19, "ID", "Indonesia");
+INSERT INTO country(id, code, name) VALUES (20, "MY", "Malaysia");
+INSERT INTO country(id, code, name) VALUES (21, "SG", "Singapore");
+
