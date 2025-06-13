@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.ngleanhvu.common.proto;
+
+option java_package = "com.ngleanhvu.common.proto";
+option java_multiple_files = true;
+
+message Country {
+  int32 id = 1;
+  string name = 2;
+  string code = 3;
+}
+
+message CountryRequest {
+  int32 id = 1;
+}
+
+service CountryService {
+  rpc GetCountryById (CountryRequest) returns (Country);
+}

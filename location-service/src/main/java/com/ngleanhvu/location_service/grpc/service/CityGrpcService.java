@@ -34,6 +34,7 @@ public class CityGrpcService extends CityServiceGrpc.CityServiceImplBase {
             com.ngleanhvu.common.proto.City c = com.ngleanhvu.common.proto.City.newBuilder()
                     .setId(city.getId())
                     .setName(city.getName())
+                    .setCountryId(countryId)
                     .build();
             return c;
         }).toList();
@@ -59,6 +60,7 @@ public class CityGrpcService extends CityServiceGrpc.CityServiceImplBase {
         com.ngleanhvu.common.proto.City protoCity = com.ngleanhvu.common.proto.City.newBuilder()
                 .setId(city.getId())
                 .setName(city.getName())
+                .setCountryId(city.getCountry().getId())
                 .build();
         streamObserver.onNext(protoCity);
         streamObserver.onCompleted();

@@ -7,5 +7,14 @@ option java_package = "com.ngleanhvu.common.proto";
 
 message District {
   int32 id = 1;
+  string name = 2;
+  int32 city_id = 3;
+}
 
+message DistrictRequest {
+  int32 id = 1;
+}
+
+service DistrictService {
+  rpc GetDistrictById (DistrictRequest) returns (District);
 }
