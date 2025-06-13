@@ -1,6 +1,8 @@
 package com.ngleanhvu.location_service.country;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.protobuf.Api;
+import com.ngleanhvu.common.response.ApiResponse;
 import com.ngleanhvu.location_service.country.entity.Country;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,12 @@ public class CountryController {
     private final CountryService countryService;
 
     @GetMapping
-    public ResponseEntity<List<Country>> getCountries(@RequestParam Map<String, String> params) {
-        return ResponseEntity.ok(countryService.getCountries(params));
+    public ResponseEntity<?> getCountries(@RequestParam Map<String, String> params) {
+        return ApiResponse.success("Get list country success", countryService.getCountries(params));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Country>> getAllCountries() throws JsonProcessingException {
-        return ResponseEntity.ok(countryService.findAllCountries());
+    public ResponseEntity<?> getAllCountries() throws JsonProcessingException {
+        return ApiResponse.success("Get all country success", countryService.findAllCountries());
     }
 }

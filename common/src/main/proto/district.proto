@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.ngleanhvu.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.ngleanhvu.common.proto";
+
+message District {
+  int32 id = 1;
+
+}

@@ -1,6 +1,7 @@
 package com.ngleanhvu.location_service.district;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ngleanhvu.common.response.ApiResponse;
 import com.ngleanhvu.location_service.district.entity.District;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class DistrictController {
     private final DistrictService districtService;
 
     @GetMapping("/cities/{cityId}")
-    public ResponseEntity<List<District>> getDistrictsByCityId(@PathVariable int cityId) throws JsonProcessingException {
-        return ResponseEntity.ok(districtService.getDistrictsByCityId(cityId));
+    public ResponseEntity<?> getDistrictsByCityId(@PathVariable int cityId) throws JsonProcessingException {
+        return ApiResponse.success("Get district by city id success", districtService.getDistrictsByCityId(cityId));
     }
 }

@@ -2,6 +2,7 @@ package com.ngleanhvu.location_service.city;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ngleanhvu.common.exception.ResourceNotFoundException;
+import com.ngleanhvu.common.response.ApiResponse;
 import com.ngleanhvu.location_service.city.entity.City;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,12 @@ public class CityController {
     private final CityService cityService;
 
     @GetMapping("/countries/{countryId}")
-    public ResponseEntity<List<City>> getCityByCountryId(@PathVariable int countryId) throws JsonProcessingException {
-        return ResponseEntity.ok(cityService.getCitiesByCountryId(countryId));
+    public ResponseEntity<?> getCityByCountryId(@PathVariable int countryId) throws JsonProcessingException {
+        return ApiResponse.success("Get list city by country id success", cityService.getCitiesByCountryId(countryId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<City> getCityById(@PathVariable int id) throws JsonProcessingException {
-        return ResponseEntity.ok(cityService.getCityById(id));
+    public ResponseEntity<?> getCityById(@PathVariable int id) throws JsonProcessingException {
+        return ApiResponse.success("Get city by id success", cityService.getCityById(id));
     }
 }
