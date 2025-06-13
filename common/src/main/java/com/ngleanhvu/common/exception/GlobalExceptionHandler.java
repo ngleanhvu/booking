@@ -17,4 +17,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleException(Exception ex) {
         return ApiResponse.error(ex.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(InvalidResourceException.class)
+    public ResponseEntity<?> handleInvalidResourceException(InvalidResourceException ex) {
+        return ApiResponse.error(ex.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
