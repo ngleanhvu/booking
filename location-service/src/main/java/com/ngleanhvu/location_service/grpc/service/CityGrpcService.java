@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ngleanhvu.common.proto.CityList;
 import com.ngleanhvu.common.proto.CityRequest;
 import com.ngleanhvu.common.proto.CityRequestForCountryId;
+import com.ngleanhvu.location_service.city.CityRepository;
 import com.ngleanhvu.location_service.city.CityService;
 import com.ngleanhvu.location_service.city.entity.City;
 import io.grpc.stub.StreamObserver;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CityGrpcService extends CityServiceGrpc.CityServiceImplBase {
 
     private final CityService cityService;
+    private final CityRepository cityRepository;
 
     @Override
     public void getAllCitiesByCountryId(CityRequestForCountryId request, StreamObserver<CityList> res) {
@@ -25,7 +27,6 @@ public class CityGrpcService extends CityServiceGrpc.CityServiceImplBase {
         List<City> cities = null;
         try {
             cities = cityService.getCitiesByCountryId(countryId);
-            System.out.println(cities.toString());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -51,18 +52,19 @@ public class CityGrpcService extends CityServiceGrpc.CityServiceImplBase {
     @Override
     public void getCityById(CityRequest request, StreamObserver<com.ngleanhvu.common.proto.City> streamObserver) {
         int cityId = request.getCityId();
-        City city;
-        try {
-            city = cityService.getCityById(cityId);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        var city = cityRepository.findById(cityId);
+
+        com.ngleanhvu.common.proto.City cityProto = null;
+
+        if (city.isPresent()) {
+            cityProto = com.ngleanhvu.common.proto.City.newBuilder()
+                    .setId(city.get().getId())
+                    .setName(city.get().getName())
+                    .setCountryId(city.get().getCountry().getId())
+                    .build();
         }
-        com.ngleanhvu.common.proto.City protoCity = com.ngleanhvu.common.proto.City.newBuilder()
-                .setId(city.getId())
-                .setName(city.getName())
-                .setCountryId(city.getCountry().getId())
-                .build();
-        streamObserver.onNext(protoCity);
+
+        streamObserver.onNext(cityProto);
         streamObserver.onCompleted();
     }
 }

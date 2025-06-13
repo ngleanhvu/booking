@@ -1,4 +1,4 @@
-package com.ngleanhvu.property_service.property.component;
+package com.ngleanhvu.common.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

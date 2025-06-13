@@ -1,6 +1,6 @@
 package com.ngleanhvu.property_service.property.entity;
 
-import com.ngleanhvu.property_service.property.component.JsonListConverter;
+import com.ngleanhvu.common.converter.JsonListConverter;
 import com.ngleanhvu.property_service.property_type.entity.PropertyType;
 import com.ngleanhvu.property_service.room_type.entity.RoomType;
 import jakarta.persistence.*;

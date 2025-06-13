@@ -2,7 +2,6 @@ package com.ngleanhvu.property_service.grpc.client;
 
 import com.ngleanhvu.common.proto.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

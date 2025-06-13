@@ -20,14 +20,18 @@ public class WardGrpcService extends WardServiceGrpc.WardServiceImplBase {
 
         int wardId = request.getId();
 
-        var ward = wardRepository.findById(wardId)
-                .orElseThrow(() -> new ResourceNotFoundException("Ward","id",String.valueOf(wardId)));
+        var ward = wardRepository.findById(wardId);
 
-        var wardProto = Ward.newBuilder()
-                .setId(wardId)
-                .setName(ward.getName())
-                .setDistrictId(ward.getDistrict().getId())
-                .build();
+        Ward wardProto = null;
+
+        if (ward.isPresent()) {
+            wardProto = Ward.newBuilder()
+                    .setId(wardId)
+                    .setName(ward.get().getName())
+                    .setDistrictId(ward.get().getDistrict().getId())
+                    .build();
+        }
+
         responseObserver.onNext(wardProto);
         responseObserver.onCompleted();
     }

@@ -1,5 +1,7 @@
 package com.ngleanhvu.property_service.property.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -7,6 +9,8 @@ import java.util.List;
 
 @Getter @Setter
 @Builder @AllArgsConstructor @NoArgsConstructor
+@NotNull
+@NotEmpty
 public class PropertyDto {
     private String title;
     private String description;
