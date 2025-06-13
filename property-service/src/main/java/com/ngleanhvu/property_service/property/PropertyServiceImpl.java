@@ -1,5 +1,6 @@
 package com.ngleanhvu.property_service.property;
 
+import com.ngleanhvu.common.constant.VariableConst;
 import com.ngleanhvu.common.exception.InvalidResourceException;
 import com.ngleanhvu.common.exception.ResourceNotFoundException;
 import com.ngleanhvu.common.proto.*;
@@ -11,21 +12,23 @@ import com.ngleanhvu.property_service.grpc.client.WardGrpcClient;
 import com.ngleanhvu.property_service.property.dto.PropertyDto;
 import com.ngleanhvu.property_service.property.entity.CurrentCode;
 import com.ngleanhvu.property_service.property.entity.Property;
+import com.ngleanhvu.property_service.property_amenity.PropertyAmenityLinkRepository;
 import com.ngleanhvu.property_service.property_amenity.PropertyAmenityRepository;
 import com.ngleanhvu.property_service.property_amenity.entity.PropertyAmenity;
+import com.ngleanhvu.property_service.property_amenity.entity.PropertyAmenityLink;
 import com.ngleanhvu.property_service.property_type.PropertyTypeRepository;
 import com.ngleanhvu.property_service.property_type.entity.PropertyType;
 import com.ngleanhvu.property_service.room_type.RoomTypeRepository;
 import com.ngleanhvu.property_service.room_type.entity.RoomType;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,10 +43,11 @@ public class PropertyServiceImpl implements PropertyService {
     private final WardGrpcClient wardGrpcClient;
     private final DistrictGrpcClient districtGrpcClient;
     private final S3Service s3Service;
+    private final PropertyAmenityLinkRepository propertyAmenityLinkRepository;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void createProperty(PropertyDto propertyDto) throws IOException {
+    public void createProperty(PropertyDto propertyDto)  {
         Country countryProto = this.countryGrpcClient.getCountryById(propertyDto.getCountryId());
         if (countryProto == null) {
             throw new ResourceNotFoundException("Country","id",String.valueOf(propertyDto.getCountryId()));
@@ -104,14 +108,55 @@ public class PropertyServiceImpl implements PropertyService {
         property.setNumBeds(propertyDto.getNumBeds());
 
         List<String> urls = new ArrayList<>();
-        for (MultipartFile multipartFile: propertyDto.getImages()) {
-            String url = s3Service.uploadFile(multipartFile);
-            urls.add(url);
+        if (propertyDto.getImages() != null && !propertyDto.getImages().isEmpty()) {
+            if (propertyDto.getImages().size() > 10) {
+                throw new IllegalArgumentException("Maximum 10 images allowed");
+            }
+            urls = propertyDto.getImages()
+                    .parallelStream()
+                    .filter(multipartFile ->
+                            (Objects.equals(multipartFile.getContentType(), "image/jpeg")
+                                    || Objects.equals(multipartFile.getContentType(), "image/png"))
+                                    && multipartFile.getSize() <= VariableConst.imageSize
+                    )
+                    .map(multipartFile -> {
+                        try {
+                            return s3Service.uploadFile(multipartFile);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to upload file", e);
+                        }
+                    })
+                    .toList();
         }
-        property.setImages(urls);
+        property.setImages(urls); // image save as json format in db
+        property.setThumbnail(urls.getFirst());
+
+        Map<Integer, Integer> amenities = Optional.ofNullable(propertyDto.getAmenities())
+                .orElse(Collections.emptyMap())
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> Integer.parseInt(e.getKey()),
+                        e -> Integer.parseInt(e.getValue())
+                ));
 
         List<PropertyAmenity> propertyAmenities = this.propertyAmenityRepository
-                .findAllById(propertyDto.getAmenityIds());
+                .findAllById(amenities.keySet());
 
+        List<PropertyAmenityLink>
+                propertyAmenityLinks = new ArrayList<>();
+
+        for (PropertyAmenity propertyAmenity: propertyAmenities) {
+            PropertyAmenityLink
+                    propertyAmenityLink = new PropertyAmenityLink();
+
+            propertyAmenityLink.setProperty(property);
+            propertyAmenityLink.setPropertyAmenity(propertyAmenity);
+            propertyAmenityLink.setNumber(amenities.get(propertyAmenity.getId()));
+            propertyAmenityLinks.add(propertyAmenityLink);
+        }
+
+        propertyRepository.saveAndFlush(property);
+        propertyAmenityLinkRepository.saveAll(propertyAmenityLinks);
     }
 }
