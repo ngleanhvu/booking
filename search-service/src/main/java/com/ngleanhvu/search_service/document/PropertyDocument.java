@@ -24,26 +24,26 @@ public class PropertyDocument {
     @Field(type = FieldType.Text)
     private String description;
 
-    @Field(type = FieldType.Object)
-    private PropertyType propertyType;
+    @Field(type = FieldType.Integer)
+    private Integer propertyType;
 
-    @Field(type = FieldType.Object)
-    private RoomType roomType;
+    @Field(type = FieldType.Integer)
+    private Integer roomType;
 
     @Field(type = FieldType.Keyword)
     private String addressStreet;
 
-    @Field(type = FieldType.Object)
-    private City city;
+    @Field(type = FieldType.Integer)
+    private Integer city;
 
-    @Field(type = FieldType.Object)
-    private Country country;
+    @Field(type = FieldType.Integer)
+    private Integer country;
 
-    @Field(type = FieldType.Object)
-    private Ward ward;
+    @Field(type = FieldType.Integer)
+    private Integer ward;
 
-    @Field(type = FieldType.Object)
-    private District district;
+    @Field(type = FieldType.Integer)
+    private Integer district;
 
     @Field(type = FieldType.Keyword)
     private String postalCode;
@@ -83,55 +83,7 @@ public class PropertyDocument {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GeoPoint {
-        private double lat;
-        private double lon;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class RoomType {
-        private Integer id;
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PropertyType {
-        private Integer id;
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Country {
-        private Integer id;
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class City {
-        private Integer id;
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class District {
-        private Integer id;
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Ward {
-        private Integer id;
-        private String name;
+        private BigDecimal lat;
+        private BigDecimal lon;
     }
 }

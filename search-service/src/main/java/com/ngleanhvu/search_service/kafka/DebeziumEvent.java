@@ -2,11 +2,16 @@ package com.ngleanhvu.search_service.kafka;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
+@Setter
+@Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DebeziumEvent {
+    // Getters and Setters
     @JsonProperty("op")
     private String operation; // c = create, u = update, d = delete
 
@@ -19,19 +24,8 @@ public class DebeziumEvent {
     @JsonProperty("source")
     private Source source;
 
-    // Getters and Setters
-    public String getOperation() { return operation; }
-    public void setOperation(String operation) { this.operation = operation; }
-
-    public Map<String, Object> getBefore() { return before; }
-    public void setBefore(Map<String, Object> before) { this.before = before; }
-
-    public Map<String, Object> getAfter() { return after; }
-    public void setAfter(Map<String, Object> after) { this.after = after; }
-
-    public Source getSource() { return source; }
-    public void setSource(Source source) { this.source = source; }
-
+    @Setter
+    @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Source {
         @JsonProperty("table")
@@ -40,10 +34,5 @@ public class DebeziumEvent {
         @JsonProperty("db")
         private String database;
 
-        public String getTable() { return table; }
-        public void setTable(String table) { this.table = table; }
-
-        public String getDatabase() { return database; }
-        public void setDatabase(String database) { this.database = database; }
     }
 }

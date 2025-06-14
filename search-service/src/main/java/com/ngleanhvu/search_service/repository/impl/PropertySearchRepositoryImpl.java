@@ -6,7 +6,6 @@ import co.elastic.clients.json.JsonData;
 import com.ngleanhvu.common.response.PagingSearch;
 import com.ngleanhvu.search_service.document.PropertyDocument;
 import com.ngleanhvu.search_service.dto.PropertySearchDto;
-import com.ngleanhvu.search_service.repository.PropertySearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -14,15 +13,14 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-@Repository
+@Component
 @RequiredArgsConstructor
-public class PropertySearchRepositoryImpl implements PropertySearchRepository {
+public class PropertySearchRepositoryImpl {
 
     private final ElasticsearchOperations operations;
 
-    @Override
     public Page<PropertyDocument> searchProperties(PropertySearchDto dto, PagingSearch paging) {
         Query query = Query.of(q -> q.bool(b -> {
             if (dto.getTitle() != null && !dto.getTitle().isBlank()) {
@@ -72,4 +70,5 @@ public class PropertySearchRepositoryImpl implements PropertySearchRepository {
         SearchHits<PropertyDocument> hits = operations.search(nativeQuery, PropertyDocument.class);
         return SearchHitSupport.searchPageFor(hits, nativeQuery.getPageable()).map(SearchHit::getContent);
     }
+
 }

@@ -1,4 +1,4 @@
-CREATE TABLE property_amenity_link (
+CREATE TABLE IF NOT EXISTS property_amenity_link (
     id INT PRIMARY KEY AUTO_INCREMENT,
     property_amenity_id INT NOT NULL,
     property_id INT NOT NULL,

@@ -1,17 +1,17 @@
-CREATE TABLE property_type (
+CREATE TABLE IF NOT EXISTS property_type (
       id INT PRIMARY KEY AUTO_INCREMENT,
       name VARCHAR(100) NOT NULL,
       description VARCHAR(255),
       UNIQUE (name)
 );
 
-CREATE TABLE room_type (
+CREATE TABLE IF NOT EXISTS room_type (
       id INT PRIMARY KEY AUTO_INCREMENT,
       name VARCHAR(100),
       UNIQUE (name)
 );
 
-CREATE TABLE property (
+CREATE TABLE IF NOT EXISTS property (
       id INT PRIMARY KEY AUTO_INCREMENT,
       title TEXT NOT NULL,
       description TEXT,
@@ -63,13 +63,13 @@ CREATE TABLE property (
      CONSTRAINT chk_images_json CHECK (JSON_VALID(images) OR images IS NULL)
 );
 
-CREATE TABLE property_amenity (
+CREATE TABLE IF NOT EXISTS property_amenity (
      id INT PRIMARY KEY AUTO_INCREMENT,
      name VARCHAR(100) NOT NULL,
      UNIQUE (name)
 );
 
-CREATE TABLE property_amenity_link (
+CREATE TABLE IF NOT EXISTS property_amenity_link (
      id INT PRIMARY KEY AUTO_INCREMENT,
      property_amenity_id INT NOT NULL,
      property_id INT NOT NULL,

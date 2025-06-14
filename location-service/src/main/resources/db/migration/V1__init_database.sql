@@ -1,11 +1,11 @@
-CREATE TABLE country (
+CREATE TABLE IF NOT EXISTS country (
                          id INT PRIMARY KEY AUTO_INCREMENT,
                          code CHAR(2) UNIQUE,
                          name VARCHAR(100),
                          INDEX (name)
 );
 
-CREATE TABLE city (
+CREATE TABLE IF NOT EXISTS city (
                       id INT PRIMARY KEY AUTO_INCREMENT,
                       name VARCHAR(100) NOT NULL,
                       country_id INT NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE city (
                       INDEX (name)
 );
 
-CREATE TABLE district (
+CREATE TABLE IF NOT EXISTS district (
                           id INT PRIMARY KEY AUTO_INCREMENT,
                           name VARCHAR(100),
                           city_id INT NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE district (
                           INDEX (name)
 );
 
-CREATE TABLE ward (
+CREATE TABLE IF NOT EXISTS ward (
                       id INT PRIMARY KEY AUTO_INCREMENT,
                       name VARCHAR(100),
                       district_id INT NOT NULL,

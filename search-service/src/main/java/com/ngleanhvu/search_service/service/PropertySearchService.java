@@ -7,4 +7,5 @@ import org.springframework.data.domain.Page;
 
 public interface PropertySearchService {
     Page<PropertyDocument> search(PropertySearchDto propertySearchDto, PagingSearch pagingSearch);
+    void createPropertyDocument(PropertyDocument propertyDocument);
 }
