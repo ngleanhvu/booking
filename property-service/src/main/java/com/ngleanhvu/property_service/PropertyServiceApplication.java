@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@ComponentScan(basePackages = {"com.ngleanhvu.common.upload", "com.ngleanhvu.property_service"})
+@ComponentScan(basePackages = {"com.ngleanhvu.common.upload", "com.ngleanhvu.common.grpc_client", "com.ngleanhvu.property_service"})
 public class PropertyServiceApplication {
 
 	public static void main(String[] args) {

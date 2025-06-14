@@ -5,10 +5,10 @@ import com.ngleanhvu.common.exception.InvalidResourceException;
 import com.ngleanhvu.common.exception.ResourceNotFoundException;
 import com.ngleanhvu.common.proto.*;
 import com.ngleanhvu.common.upload.S3Service;
-import com.ngleanhvu.property_service.grpc.client.CityGrpcClient;
-import com.ngleanhvu.property_service.grpc.client.CountryGrpcClient;
-import com.ngleanhvu.property_service.grpc.client.DistrictGrpcClient;
-import com.ngleanhvu.property_service.grpc.client.WardGrpcClient;
+import com.ngleanhvu.common.grpc_client.CityGrpcClient;
+import com.ngleanhvu.common.grpc_client.CountryGrpcClient;
+import com.ngleanhvu.common.grpc_client.DistrictGrpcClient;
+import com.ngleanhvu.common.grpc_client.WardGrpcClient;
 import com.ngleanhvu.property_service.property.dto.PropertyDto;
 import com.ngleanhvu.property_service.property.entity.CurrentCode;
 import com.ngleanhvu.property_service.property.entity.Property;
@@ -21,7 +21,6 @@ import com.ngleanhvu.property_service.property_type.entity.PropertyType;
 import com.ngleanhvu.property_service.room_type.RoomTypeRepository;
 import com.ngleanhvu.property_service.room_type.entity.RoomType;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +47,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void createProperty(PropertyDto propertyDto)  {
+
         Country countryProto = this.countryGrpcClient.getCountryById(propertyDto.getCountryId());
         if (countryProto == null) {
             throw new ResourceNotFoundException("Country","id",String.valueOf(propertyDto.getCountryId()));
@@ -159,4 +159,5 @@ public class PropertyServiceImpl implements PropertyService {
         propertyRepository.saveAndFlush(property);
         propertyAmenityLinkRepository.saveAll(propertyAmenityLinks);
     }
+
 }

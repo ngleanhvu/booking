@@ -1,9 +1,9 @@
 package com.ngleanhvu.property_service;
 
+import com.ngleanhvu.common.grpc_client.CityGrpcClient;
 import com.ngleanhvu.common.proto.City;
 import com.ngleanhvu.common.proto.CityList;
 import com.ngleanhvu.common.upload.S3Service;
-import com.ngleanhvu.property_service.grpc.client.CityGrpcClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -4,7 +4,7 @@ spring:
   datasource:
     username: ${LOCATION_DB_USERNAME}
     password: ${LOCATION_DB_PASSWORD}
-    url: jdbc:mysql://localhost:3306/${LOCATION_DB_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:${location_db_port}/${LOCATION_DB_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
   flyway:
     locations: classpath:db/migration
     enabled: true
@@ -17,6 +17,7 @@ eureka:
     service-url:
       defaultZone: http://localhost:8009/eureka
 
+location_db_port: 3307
 
 grpc:
   server:

@@ -1,4 +1,4 @@
-package com.ngleanhvu.property_service.grpc.client;
+package com.ngleanhvu.common.grpc_client;
 
 import com.ngleanhvu.common.proto.Ward;
 import com.ngleanhvu.common.proto.WardRequest;
@@ -19,3 +19,4 @@ public class WardGrpcClient {
         return response;
     }
 }
+

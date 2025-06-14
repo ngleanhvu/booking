@@ -4,7 +4,7 @@ spring:
   datasource:
     username: ${USER_DB_USERNAME}
     password: ${USER_DB_PASSWORD}
-    url: jdbc:mysql://localhost:3306/${USER_DB_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:${user_db_port}/${USER_DB_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -16,6 +16,8 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
+
+user_db_port: 3307
 
 server:
   port: 8000

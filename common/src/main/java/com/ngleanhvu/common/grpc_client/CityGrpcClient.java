@@ -1,4 +1,4 @@
-package com.ngleanhvu.property_service.grpc.client;
+package com.ngleanhvu.common.grpc_client;
 
 import com.ngleanhvu.common.proto.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;

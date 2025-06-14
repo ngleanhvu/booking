@@ -15,6 +15,7 @@
         <module>property-service</module>
         <module>location-service</module>
         <module>discovery-server</module>
+        <module>search-service</module>
     </modules>
 
     <properties>
@@ -45,6 +46,13 @@
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring.cloud.version}</version>
                 <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
                 <scope>import</scope>
             </dependency>
         </dependencies>
