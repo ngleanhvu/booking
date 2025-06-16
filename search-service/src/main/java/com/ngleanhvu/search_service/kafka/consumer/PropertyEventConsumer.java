@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.ByteBuffer;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -86,15 +84,15 @@ public class PropertyEventConsumer {
         doc.setPostalCode(getStringValue(data.get("postal_code")));
         doc.setThumbnail(getStringValue(data.get("thumbnail")));
         doc.setCurrencyCode(getStringValue(data.get("currency_code")));
-        doc.setPricePerNight(decodeBase64ToBigDecimalSafe(data.get("price_per_night")));
+        doc.setPricePerNight(getDecimalValue(data.get("price_per_night")));
         doc.setMaxGuests(getIntegerValue(data.get("max_guests")));
         doc.setNumBedrooms(getIntegerValue(data.get("num_bedrooms")));
         doc.setNumBeds(getIntegerValue(data.get("num_beds")));
         doc.setNumBathrooms(getIntegerValue(data.get("num_bathrooms")));
         doc.setActive(Boolean.TRUE.equals(data.get("active")) || Boolean.TRUE.equals(getBooleanValue(data.get("active"))));
 
-        BigDecimal lat = decodeBase64ToBigDecimalSafe(data.get("latitude"));
-        BigDecimal lon = decodeBase64ToBigDecimalSafe(data.get("longitude"));
+        BigDecimal lat = getDecimalValue(data.get("latitude"));
+        BigDecimal lon = getDecimalValue(data.get("longitude"));
         if (lat != null && lon != null) {
             doc.setLocation(new PropertyDocument.GeoPoint(lat, lon));
         }
@@ -137,36 +135,11 @@ public class PropertyEventConsumer {
         return false;
     }
 
-    private BigDecimal decodeBase64ToBigDecimalSafe(Object value) {
-        if (value == null) return BigDecimal.ZERO;
-
+    private BigDecimal getDecimalValue(Object value) {
         try {
-            if (value instanceof Number) {
-                return BigDecimal.valueOf(((Number) value).doubleValue()).setScale(2, RoundingMode.DOWN);
-            }
-
-            String str = value.toString().trim();
-            byte[] decoded = Base64.getDecoder().decode(str);
-
-            ByteBuffer buffer = ByteBuffer.wrap(decoded);
-            BigDecimal result;
-
-            switch (decoded.length) {
-                case 4: // float
-                    result = BigDecimal.valueOf(buffer.getFloat());
-                    break;
-                case 8: // double
-                    result = BigDecimal.valueOf(buffer.getDouble());
-                    break;
-                default:
-                    logger.warn("Unexpected byte array length: {} for value '{}'", decoded.length, value);
-                    return BigDecimal.ZERO;
-            }
-
-            return result.setScale(2, RoundingMode.DOWN); // Cắt đến 2 số sau dấu chấm
-
+            return new BigDecimal(value.toString()).setScale(2, RoundingMode.DOWN);
         } catch (Exception e) {
-            logger.warn("Cannot decode base64 value: '{}'", value, e);
+            logger.warn("Cannot parse decimal from value: '{}'", value, e);
             return BigDecimal.ZERO;
         }
     }

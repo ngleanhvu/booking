@@ -15,7 +15,7 @@ curl -X POST http://localhost:8083/connectors \
          "table.include.list": "booking_property_db.property",
          "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
          "schema.history.internal.kafka.topic": "booking_property_db.schema-changes.history",
-
+         "decimal.handling.mode": "string",
          "key.converter": "org.apache.kafka.connect.json.JsonConverter",
          "value.converter": "org.apache.kafka.connect.json.JsonConverter",
          "key.converter.schemas.enable": "false",
