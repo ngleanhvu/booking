@@ -7,15 +7,16 @@ import com.ngleanhvu.search_service.service.PropertySearchService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.ByteBuffer;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,9 +30,7 @@ public class PropertyEventConsumer {
     private final PropertySearchService propertySearchService;
     private static final String TABLE_NAME = "property";
     private static final String DATABASE_NAME = "booking_property_db";
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @KafkaListener(
             topics = "booking_property_db.booking_property_db.property",
@@ -42,15 +41,12 @@ public class PropertyEventConsumer {
                                      @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
                                      @Header(KafkaHeaders.OFFSET) long offset) {
 
+        logger.info("Payload {}", message);
         logger.info("Received message from topic: {}, partition: {}, offset: {}", topic, partition, offset);
 
         try {
             DebeziumEvent event = objectMapper.readValue(message, DebeziumEvent.class);
-
-            if (event.getSource() != null && TABLE_NAME.equals(event.getSource().getTable()) && DATABASE_NAME.equals(event.getSource().getDatabase())) {
-                processPropertyEvent(event);
-            }
-
+            processPropertyEvent(event);
         } catch (Exception e) {
             logger.error("Error processing Kafka message: {}", e.getMessage(), e);
         }
@@ -58,13 +54,14 @@ public class PropertyEventConsumer {
 
     private void processPropertyEvent(DebeziumEvent event) {
         String operation = event.getOperation();
-
+        logger.info("Operation: {}", operation);
         switch (operation) {
             case "c":
                 Map<String, Object> afterData = event.getAfter();
+                logger.info("After data: {}", afterData);
                 if (afterData != null) {
                     PropertyDocument doc = mapToPropertyDocument(afterData);
-                    propertySearchService.createPropertyDocument(doc); // lưu dữ liệu mới vào Elasticsearch
+                    propertySearchService.createPropertyDocument(doc);
                     logger.info("Created new property with ID {}", doc.getId());
                 }
                 break;
@@ -89,28 +86,32 @@ public class PropertyEventConsumer {
         doc.setPostalCode(getStringValue(data.get("postal_code")));
         doc.setThumbnail(getStringValue(data.get("thumbnail")));
         doc.setCurrencyCode(getStringValue(data.get("currency_code")));
-        doc.setPricePerNight(getBigDecimalValue(data.get("price_per_night")));
+        doc.setPricePerNight(decodeBase64ToBigDecimalSafe(data.get("price_per_night")));
         doc.setMaxGuests(getIntegerValue(data.get("max_guests")));
         doc.setNumBedrooms(getIntegerValue(data.get("num_bedrooms")));
         doc.setNumBeds(getIntegerValue(data.get("num_beds")));
-        doc.setNumBathrooms(getBigDecimalValue(data.get("num_bathrooms")));
+        doc.setNumBathrooms(getIntegerValue(data.get("num_bathrooms")));
         doc.setActive(Boolean.TRUE.equals(data.get("active")) || Boolean.TRUE.equals(getBooleanValue(data.get("active"))));
 
-        BigDecimal lat = getBigDecimalValue(data.get("latitude"));
-        BigDecimal lon = getBigDecimalValue(data.get("longitude"));
+        BigDecimal lat = decodeBase64ToBigDecimalSafe(data.get("latitude"));
+        BigDecimal lon = decodeBase64ToBigDecimalSafe(data.get("longitude"));
         if (lat != null && lon != null) {
             doc.setLocation(new PropertyDocument.GeoPoint(lat, lon));
         }
 
         Object imagesObj = data.get("images");
         if (imagesObj instanceof List<?>) {
-            doc.setImages(((List<?>) imagesObj).stream()
-                    .map(Object::toString)
-                    .collect(Collectors.toList()));
+            doc.setImages(((List<?>) imagesObj).stream().map(Object::toString).collect(Collectors.toList()));
+        } else if (imagesObj instanceof String) {
+            try {
+                List<String> images = objectMapper.readValue((String) imagesObj, new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                doc.setImages(images);
+            } catch (Exception e) {
+                logger.warn("Failed to parse images JSON: {}", imagesObj);
+            }
         }
 
         return doc;
-
     }
 
     private String getStringValue(Object value) {
@@ -129,12 +130,6 @@ public class PropertyEventConsumer {
         return Integer.parseInt(value.toString());
     }
 
-    private BigDecimal getBigDecimalValue(Object value) {
-        if (value == null) return null;
-        if (value instanceof Number) return BigDecimal.valueOf(((Number) value).doubleValue());
-        return new BigDecimal(value.toString());
-    }
-
     private Boolean getBooleanValue(Object value) {
         if (value instanceof Boolean) return (Boolean) value;
         if (value instanceof String) return Boolean.parseBoolean((String) value);
@@ -142,10 +137,38 @@ public class PropertyEventConsumer {
         return false;
     }
 
-    private Double getDoubleValue(Object value) {
-        if (value == null) return null;
-        if (value instanceof Number) return ((Number) value).doubleValue();
-        return Double.parseDouble(value.toString());
-    }
-}
+    private BigDecimal decodeBase64ToBigDecimalSafe(Object value) {
+        if (value == null) return BigDecimal.ZERO;
 
+        try {
+            if (value instanceof Number) {
+                return BigDecimal.valueOf(((Number) value).doubleValue()).setScale(2, RoundingMode.DOWN);
+            }
+
+            String str = value.toString().trim();
+            byte[] decoded = Base64.getDecoder().decode(str);
+
+            ByteBuffer buffer = ByteBuffer.wrap(decoded);
+            BigDecimal result;
+
+            switch (decoded.length) {
+                case 4: // float
+                    result = BigDecimal.valueOf(buffer.getFloat());
+                    break;
+                case 8: // double
+                    result = BigDecimal.valueOf(buffer.getDouble());
+                    break;
+                default:
+                    logger.warn("Unexpected byte array length: {} for value '{}'", decoded.length, value);
+                    return BigDecimal.ZERO;
+            }
+
+            return result.setScale(2, RoundingMode.DOWN); // Cắt đến 2 số sau dấu chấm
+
+        } catch (Exception e) {
+            logger.warn("Cannot decode base64 value: '{}'", value, e);
+            return BigDecimal.ZERO;
+        }
+    }
+
+}

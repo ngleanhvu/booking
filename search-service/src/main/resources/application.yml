@@ -21,11 +21,10 @@ spring:
     socket-timeout: 60s
 
 eureka:
+  instance:
+    preferIpAddress: true
   client:
-    service-url:
-      defaultZone: http://localhost:8009/eureka
-
-logging:
-  level:
-    com.example.searchservice: DEBUG
-    org.springframework.kafka: DEBUG
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8009/eureka/

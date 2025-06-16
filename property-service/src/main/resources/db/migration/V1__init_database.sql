@@ -29,16 +29,16 @@ CREATE TABLE IF NOT EXISTS property (
      thumbnail VARCHAR(255),
      images JSON,
 
-     latitude DECIMAL(10, 7),
-     longitude DECIMAL(10, 7),
+     latitude DECIMAL(10,2),
+     longitude DECIMAL(10,2),
 
-     price_per_night DECIMAL(10, 2) NOT NULL,
+     price_per_night DECIMAL(10,2),
      currency_code ENUM('VNĐ', 'USD') DEFAULT 'VNĐ',
 
      max_guests INT DEFAULT 1,
      num_bedrooms INT DEFAULT 1,
      num_beds INT DEFAULT 1,
-     num_bathrooms DECIMAL(2,1) DEFAULT 1.0,
+     num_bathrooms INT DEFAULT 1,
 
      active BIT DEFAULT b'1',
 

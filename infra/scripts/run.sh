@@ -1,0 +1,24 @@
+curl -X POST http://localhost:8083/connectors \
+  -H "Content-Type: application/json" \
+  -d '{
+       "name": "booking-property-mysql-connector",
+       "config": {
+         "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+         "tasks.max": "1",
+         "database.hostname": "booking-db",
+         "database.port": "3306",
+         "database.user": "root",
+         "database.password": "root",
+         "database.server.id": "184014",
+         "topic.prefix": "booking_property_db",
+         "database.include.list": "booking_property_db",
+         "table.include.list": "booking_property_db.property",
+         "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
+         "schema.history.internal.kafka.topic": "booking_property_db.schema-changes.history",
+
+         "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+         "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+         "key.converter.schemas.enable": "false",
+         "value.converter.schemas.enable": "false"
+       }
+     }'

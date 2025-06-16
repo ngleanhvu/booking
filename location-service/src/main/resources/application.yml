@@ -12,10 +12,15 @@ spring:
     redis:
       host: ${LOCATION_REDIS_HOST}
       port: ${LOCATION_REDIS_PORT}
+
 eureka:
+  instance:
+    preferIpAddress: true
   client:
-    service-url:
-      defaultZone: http://localhost:8009/eureka
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8009/eureka/
 
 location_db_port: 3307
 

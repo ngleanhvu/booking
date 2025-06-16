@@ -72,8 +72,8 @@ public class PropertyDocument {
     @Field(type = FieldType.Integer)
     private Integer numBeds;
 
-    @Field(type = FieldType.Double)
-    private BigDecimal numBathrooms;
+    @Field(type = FieldType.Integer)
+    private Integer numBathrooms;
 
     @Field(type = FieldType.Boolean)
     private Boolean active;

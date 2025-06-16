@@ -19,9 +19,13 @@ aws:
   s3_bucket_name: ${AWS_S3_BUCKET_NAME}
 
 eureka:
+  instance:
+    preferIpAddress: true
   client:
-    service-url:
-      defaultZone: http://localhost:8009/eureka
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8009/eureka/
 
 grpc:
   server:
