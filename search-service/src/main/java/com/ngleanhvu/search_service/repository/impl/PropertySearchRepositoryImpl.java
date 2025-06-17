@@ -29,23 +29,23 @@ public class PropertySearchRepositoryImpl {
             if (dto.getDescription() != null && !dto.getDescription().isBlank()) {
                 b.must(m -> m.match(t -> t.field("description").query(FieldValue.of(dto.getDescription()))));
             }
-            if (dto.getPropertyType() != null && !dto.getPropertyType().isBlank()) {
-                b.must(m -> m.term(t -> t.field("propertyType.id").value(dto.getPropertyType())));
+            if (dto.getPropertyType() != null) {
+                b.must(m -> m.term(t -> t.field("propertyType").value(dto.getPropertyType())));
             }
-            if (dto.getRoomType() != null && !dto.getRoomType().isBlank()) {
-                b.must(m -> m.term(t -> t.field("roomType.id").value(dto.getRoomType())));
+            if (dto.getRoomType() != null) {
+                b.must(m -> m.term(t -> t.field("roomType").value(dto.getRoomType())));
             }
-            if (dto.getCountry() != null && !dto.getCountry().isBlank()) {
-                b.must(m -> m.term(t -> t.field("country.id").value(dto.getCountry())));
+            if (dto.getCountry() != null) {
+                b.must(m -> m.term(t -> t.field("country").value(dto.getCountry())));
             }
-            if (dto.getCity() != null && !dto.getCity().isBlank()) {
-                b.must(m -> m.term(t -> t.field("city.id").value(dto.getCity())));
+            if (dto.getCity() != null) {
+                b.must(m -> m.term(t -> t.field("city").value(dto.getCity())));
             }
-            if (dto.getDistrict() != null && !dto.getDistrict().isBlank()) {
-                b.must(m -> m.term(t -> t.field("district.id").value(dto.getDistrict())));
+            if (dto.getDistrict() != null) {
+                b.must(m -> m.term(t -> t.field("district").value(dto.getDistrict())));
             }
-            if (dto.getWard() != null && !dto.getWard().isBlank()) {
-                b.must(m -> m.term(t -> t.field("ward.id").value(dto.getWard())));
+            if (dto.getWard() != null) {
+                b.must(m -> m.term(t -> t.field("ward").value(dto.getWard())));
             }
             if (dto.getPrice() != null) {
                 b.must(m -> m.range(r -> r

@@ -1,20 +1,21 @@
 package com.ngleanhvu.search_service.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
+@Builder
 public class PropertySearchDto {
-    private String country;
-    private String city;
-    private String district;
-    private String ward;
-    private String string;
+    private Integer country;
+    private Integer city;
+    private Integer district;
+    private Integer ward;
     private String title;
     private String description;
-    private String propertyType;
-    private String roomType;
+    private Integer propertyType;
+    private Integer roomType;
     private BigDecimal price;
     private Integer numBeds;
     private Integer numBaths;
