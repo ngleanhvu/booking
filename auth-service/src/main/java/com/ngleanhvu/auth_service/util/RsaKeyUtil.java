@@ -1,6 +1,5 @@
 package com.ngleanhvu.auth_service.util;
 
-import java.io.*;
 import java.nio.file.*;
 import java.security.*;
 import java.security.interfaces.*;
