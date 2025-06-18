@@ -36,4 +36,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
-./infra/docker/docker-compose.override.yml
+auth-service/src/main/resources/keys
+public.pem
+infra/k8s
+infra/docker

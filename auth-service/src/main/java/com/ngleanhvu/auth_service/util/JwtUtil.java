@@ -1,14 +1,18 @@
 package com.ngleanhvu.auth_service.util;
 
+import com.ngleanhvu.auth_service.entity.Auth;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -16,38 +20,57 @@ public class JwtUtil {
     private static final long ACCESS_TOKEN_EXPIRATION = 3600; // 1 giờ
     private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 3600; // 7 ngày
 
-    // Generate access token (ngắn hạn)
-    public String generateAccessToken(String subject) throws Exception {
-        RSAPrivateKey privateKey = RsaKeyUtil.getPrivateKey();
+    @Value("${host_name}")
+    private String hostName;
+
+    @Value("${server.port}")
+    private String port;
+
+    @Value("${protocol}")
+    private String protocol;
+
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
+
+    @PostConstruct
+    public void init() throws Exception {
+        privateKey = RsaKeyUtil.getPrivateKey();
+        publicKey = RsaKeyUtil.getPublicKey();
+    }
+
+    public String generateAccessToken(Auth auth) throws Exception {
         Instant now = Instant.now();
 
         return Jwts.builder()
-                .setSubject(subject)
-                .setIssuer("http://localhost:8080")
+                .setSubject(String.valueOf(auth.getId()))
+                .setIssuer("auth-service")  // trùng với Kong
+                .setAudience("gateway")     // bạn có thể check ở Kong
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plusSeconds(ACCESS_TOKEN_EXPIRATION)))
+                .claim("email", auth.getEmail())
+                .claim("role", auth.getRole().name())
+                .claim("scope", "openid profile email")
+                .claim("jti", UUID.randomUUID().toString())
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
     }
 
-    // Generate refresh token (dài hạn)
-    public String generateRefreshToken(String subject) throws Exception {
-        RSAPrivateKey privateKey = RsaKeyUtil.getPrivateKey();
+    public String generateRefreshToken(Auth auth) throws Exception {
         Instant now = Instant.now();
 
         return Jwts.builder()
-                .setSubject(subject)
-                .setIssuer("http://localhost:8080")
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(REFRESH_TOKEN_EXPIRATION)))
-                .claim("type", "refresh_token")
+                .setId(UUID.randomUUID().toString())
+                .setSubject(String.valueOf(auth.getId())) // sub
+                .setIssuer(String.format("%s://%s:%s", protocol, hostName, port)) // iss
+                .claim("type", "refresh_token")           // bắt buộc phân biệt refresh token
+                .setIssuedAt(Date.from(now))              // iat
+                .setExpiration(Date.from(now.plusSeconds(REFRESH_TOKEN_EXPIRATION))) // exp
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            RSAPublicKey publicKey = RsaKeyUtil.getPublicKey();
 
             Jwts.parserBuilder()
                     .setSigningKey(publicKey)
