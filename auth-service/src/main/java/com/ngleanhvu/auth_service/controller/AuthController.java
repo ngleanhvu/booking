@@ -15,7 +15,11 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @GetMapping("/verify")
-    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Void> verifyToken(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         String token = authHeader.replace("Bearer ", "");
 
         if (!jwtUtil.validateToken(token)) {
@@ -25,5 +29,4 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    
 }

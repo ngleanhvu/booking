@@ -1,31 +1,42 @@
 package com.ngleanhvu.auth_service.util;
 
-import java.nio.file.*;
-import java.security.*;
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.InputStream;
+import java.security.KeyFactory;
 import java.security.interfaces.*;
 import java.security.spec.*;
 import java.util.Base64;
 
 public class RsaKeyUtil {
-    private static final Path PRIVATE_PATH = Path.of("keys/private.pem");
-    private static final Path PUBLIC_PATH = Path.of("keys/public.pem");
+
+    private static final String PRIVATE_PATH = "keys/private.pem";
+    private static final String PUBLIC_PATH = "keys/public.pem";
 
     public static RSAPrivateKey getPrivateKey() throws Exception {
-        String content = Files.readString(PRIVATE_PATH)
+        String content = readKeyFromClasspath(PRIVATE_PATH)
                 .replaceAll("-----\\w+ PRIVATE KEY-----", "")
                 .replaceAll("\\s", "");
+
         byte[] bytes = Base64.getDecoder().decode(content);
-        return (RSAPrivateKey) KeyFactory.getInstance("RSA")
-                .generatePrivate(new PKCS8EncodedKeySpec(bytes));
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(bytes);
+        return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
     }
 
     public static RSAPublicKey getPublicKey() throws Exception {
-        String content = Files.readString(PUBLIC_PATH)
+        String content = readKeyFromClasspath(PUBLIC_PATH)
                 .replaceAll("-----\\w+ PUBLIC KEY-----", "")
                 .replaceAll("\\s", "");
+
         byte[] bytes = Base64.getDecoder().decode(content);
-        return (RSAPublicKey) KeyFactory.getInstance("RSA")
-                .generatePublic(new X509EncodedKeySpec(bytes));
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(bytes);
+        return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(spec);
+    }
+
+    private static String readKeyFromClasspath(String path) throws Exception {
+        ClassPathResource resource = new ClassPathResource(path);
+        try (InputStream inputStream = resource.getInputStream()) {
+            return new String(inputStream.readAllBytes());
+        }
     }
 }
-

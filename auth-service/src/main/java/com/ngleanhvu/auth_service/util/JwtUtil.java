@@ -43,8 +43,8 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(String.valueOf(auth.getId()))
-                .setIssuer("auth-service")  // trùng với Kong
-                .setAudience("gateway")     // bạn có thể check ở Kong
+                .setIssuer("auth-service")
+                .setAudience("gateway")
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plusSeconds(ACCESS_TOKEN_EXPIRATION)))
                 .claim("email", auth.getEmail())
@@ -61,8 +61,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setId(UUID.randomUUID().toString())
                 .setSubject(String.valueOf(auth.getId())) // sub
-                .setIssuer(String.format("%s://%s:%s", protocol, hostName, port)) // iss
-                .claim("type", "refresh_token")           // bắt buộc phân biệt refresh token
+                .claim("type", "refresh_token")
                 .setIssuedAt(Date.from(now))              // iat
                 .setExpiration(Date.from(now.plusSeconds(REFRESH_TOKEN_EXPIRATION))) // exp
                 .signWith(privateKey, SignatureAlgorithm.RS256)

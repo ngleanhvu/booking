@@ -11,8 +11,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/property-types")
-public class PropertyTypeController {
+@RequestMapping("/api/v1/property-types/public")
+public class PropertyTypeControllerPublic {
 
     private final PropertyTypeService propertyTypeService;
 

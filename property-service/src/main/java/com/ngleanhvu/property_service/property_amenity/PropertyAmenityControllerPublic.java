@@ -11,8 +11,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/property-amenities")
-public class PropertyAmenityController {
+@RequestMapping("/api/v1/property-amenities/public")
+public class PropertyAmenityControllerPublic {
 
     private final PropertyAmenityService propertyAmenityService;
 

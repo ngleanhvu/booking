@@ -61,13 +61,24 @@
     </dependencyManagement>
 
     <build>
-        <plugins>
-            <!-- Plugin Spring Boot -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
+        <plugins>
             <!-- Plugin Compiler + Annotation Processing (Lombok) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

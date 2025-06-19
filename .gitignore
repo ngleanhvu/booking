@@ -37,6 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 auth-service/src/main/resources/keys
-public.pem
 infra/k8s
 infra/docker

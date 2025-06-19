@@ -45,13 +45,11 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-
         <!-- Eureka Client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-
         <!-- Flyway + MySQL -->
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -69,7 +67,6 @@
             <version>8.3.0</version>
             <scope>runtime</scope>
         </dependency>
-
         <!-- Annotation API -->
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -109,7 +106,6 @@
             <artifactId>protobuf-java</artifactId>
             <version>${protobuf.version}</version>
         </dependency>
-
         <!-- gRPC Spring Boot Starter -->
         <dependency>
             <groupId>net.devh</groupId>
@@ -122,20 +118,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <!-- Redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
-
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -154,7 +147,6 @@
             <artifactId>s3</artifactId>
             <version>${aws.sdk}</version> <!-- Hoặc phiên bản mới nhất -->
         </dependency>
-
         <!-- Elasticsearch -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -162,7 +154,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -180,6 +172,19 @@
         </extensions>
 
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>true</skip> <!-- 👈 Thêm dòng này để skip triệt để -->
+                </configuration>
+            </plugin>
             <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -197,13 +202,6 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-
-            <!-- Spring Boot Plugin -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <!-- Protobuf Plugin -->
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>

@@ -12,9 +12,9 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/properties")
+@RequestMapping("/api/v1/properties/secure")
 @Slf4j
-public class PropertyController {
+public class PropertyControllerSecure {
 
     private final PropertyService propertyService;
 
