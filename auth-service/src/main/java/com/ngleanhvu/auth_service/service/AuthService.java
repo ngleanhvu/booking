@@ -1,8 +1,9 @@
 package com.ngleanhvu.auth_service.service;
 
-import com.ngleanhvu.auth_service.dto.AuthRegisterDto;
-import com.ngleanhvu.auth_service.entity.Auth;
+import com.ngleanhvu.auth_service.dto.RegisterDto;
+
+import java.io.IOException;
 
 public interface AuthService {
-    void createAuth(AuthRegisterDto authRegisterDto);
+    void register(RegisterDto registerDto) throws IOException;
 }

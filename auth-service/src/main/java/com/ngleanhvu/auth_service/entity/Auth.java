@@ -12,13 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Auth {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
-    private Integer status;
+    private Integer status = 1;
 }

@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     @Column(length = 100, nullable = false, unique = true)
     private String email;
@@ -31,19 +30,11 @@ public class User {
     @Column(length = 15, nullable = false, unique = true)
     private String phone;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String password;
-
     @Column(length = 255, nullable = false)
     private String avatar = "";
 
-    // BIT(1) trong DB, ánh xạ với Boolean trong Java
     @Column(nullable = false)
     private Boolean active = true;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10, nullable = false)
-    private Role role = Role.GUEST;
 
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
@@ -60,12 +51,6 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedDate = LocalDateTime.now();
-    }
-
-    // --- Enum Role ---
-    public enum Role {
-        GUEST,
-        ADMIN
     }
 
 }

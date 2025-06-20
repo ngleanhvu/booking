@@ -1,18 +1,15 @@
 CREATE TABLE user (
-   id INT PRIMARY KEY AUTO_INCREMENT,
+   id CHAR(36) PRIMARY KEY ,
    email VARCHAR(100) NOT NULL UNIQUE,
    full_name VARCHAR(70) NOT NULL,
    username VARCHAR(70) NOT NULL UNIQUE,
    phone VARCHAR(15) NOT NULL UNIQUE,
-   password TEXT NOT NULL,
    avatar VARCHAR(255) DEFAULT '',
    active BIT DEFAULT b'1',
-   role ENUM('GUEST', 'ADMIN') DEFAULT 'GUEST',
    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-   INDEX idx_user_status (active),
-   INDEX idx_user_role (role)
+   INDEX idx_user_status (active)
 );
 
 

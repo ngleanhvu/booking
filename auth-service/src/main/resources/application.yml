@@ -16,6 +16,12 @@ spring:
     baseline-on-migrate: true
     validate-on-migrate: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 eureka:
   instance:
     preferIpAddress: true
@@ -25,9 +31,18 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8009/eureka/
 
+
 auth_db_port: 3307
 host_name: localhost
 protocol: http
+
+grpc:
+  server:
+    port: 9015
+  client:
+    user-service:
+      address: static://localhost:9000
+      negotiationType: plaintext
 
 server:
   port: 8015

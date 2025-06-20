@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package com.ngleanhvu.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.ngleanhvu.common.proto";
+
+message User {
+  string id = 1;
+  string full_name = 2;
+  string phone = 3;
+  string email = 4;
+  string avatar = 5;
+  bool active = 6;
+  string password = 7;
+  string username = 9;
+}
+
+message UserRequestWithEmail {
+  string email = 1;
+}
+
+message UserRequestWithPhone {
+  string phone = 1;
+}
+
+message UserRequestWithId {
+  string id = 1;
+}
+
+service UserService {
+  rpc GetUserByEmail (UserRequestWithEmail) returns (User);
+  rpc GetUserByPhone (UserRequestWithPhone) returns (User);
+  rpc GetUserById (UserRequestWithId) returns (User);
+}
