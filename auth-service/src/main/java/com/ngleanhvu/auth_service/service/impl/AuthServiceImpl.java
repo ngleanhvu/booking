@@ -30,8 +30,8 @@ public class AuthServiceImpl implements AuthService {
     private final UserGrpcClient userGrpcClient;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
-    private KafkaTemplate<String, String> kafkaTemplate;
-    private ObjectMapper objectMapper;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -61,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
 
         authRepository.save(auth);
         String url = s3Service.uploadFile(registerDto.getAvatar());
+
 
         UserCreationEvent userCreationEvent = new UserCreationEvent();
         userCreationEvent.setId(id);
