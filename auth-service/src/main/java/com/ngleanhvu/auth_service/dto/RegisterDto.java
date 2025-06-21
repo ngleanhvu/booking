@@ -1,9 +1,6 @@
 package com.ngleanhvu.auth_service.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,5 +25,6 @@ public class RegisterDto {
     @Pattern(regexp = "^\\d{10,15}$")
     private String phone;
 
+    @NotNull
     private MultipartFile avatar;
 }

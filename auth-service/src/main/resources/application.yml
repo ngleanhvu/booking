@@ -17,6 +17,11 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
+  data:
+    redis:
+      host: ${AUTH_REDIS_HOST}
+      password: ${AUTH_REDIS_PORT}
+
 eureka:
   instance:
     preferIpAddress: true
@@ -32,6 +37,10 @@ aws:
   region: ${AWS_REGION}
   s3_bucket_name: ${AWS_S3_BUCKET_NAME}
 
+jwt:
+  expiration:
+    access_token: 600
+    refresh_token: 604800
 
 auth_db_port: 3307
 host_name: localhost
