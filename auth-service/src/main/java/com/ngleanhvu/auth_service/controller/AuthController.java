@@ -1,13 +1,12 @@
 package com.ngleanhvu.auth_service.controller;
 
-import com.ngleanhvu.auth_service.dto.LoginRequest;
-import com.ngleanhvu.auth_service.dto.LoginResponse;
-import com.ngleanhvu.auth_service.dto.RegisterDto;
+import com.ngleanhvu.auth_service.dto.*;
 import com.ngleanhvu.auth_service.service.AuthService;
 import com.ngleanhvu.auth_service.util.JwtUtil;
+import com.ngleanhvu.common.exception.InvalidResourceException;
+import com.ngleanhvu.common.exception.ResourceNotFoundException;
 import com.ngleanhvu.common.response.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @ModelAttribute LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
         LoginResponse loginResponse = authService.login(loginRequest);
         ApiResponse<LoginResponse> apiResponse = new ApiResponse<>("Login success",
                 HttpStatus.OK.name(), loginResponse);
@@ -58,16 +57,16 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(@NotNull String refreshToken) throws Exception {
-        authService.logout(refreshToken);
+    public ResponseEntity<ApiResponse<Void>> logout(@Valid @RequestBody LogoutRequest logoutRequest) throws InvalidResourceException, ResourceNotFoundException {
+        authService.logout(logoutRequest.getRefreshToken());
         ApiResponse<Void> response = new ApiResponse<>("Logout success",
                 HttpStatus.OK.name(), null);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<String>> refresh(@NotNull String refreshToken) throws Exception {
-        String accessToken = authService.refresh(refreshToken);
+    public ResponseEntity<ApiResponse<String>> refresh(@Valid @RequestBody RefreshRequest refreshRequest) throws InvalidResourceException, ResourceNotFoundException {
+        String accessToken = authService.refresh(refreshRequest.getRefreshToken());
         ApiResponse<String> apiResponse = new ApiResponse<>("Refresh token success",
                 HttpStatus.OK.name(), accessToken);
         return ResponseEntity.ok(apiResponse);

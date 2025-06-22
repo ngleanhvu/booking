@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 @NotNull
-public class LoginRequest {
-    private String email;
-    private String password;
+public class RefreshRequest {
+    private String refreshToken;
 }

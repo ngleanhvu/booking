@@ -35,7 +35,7 @@ public class JwtUtil {
         publicKey = RsaKeyUtil.getPublicKey();
     }
 
-    public String generateAccessToken(Auth auth) throws Exception {
+    public String generateAccessToken(Auth auth) {
         Instant now = Instant.now();
 
         return Jwts.builder()
@@ -52,7 +52,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateRefreshToken(Auth auth) throws Exception {
+    public String generateRefreshToken(Auth auth) {
         Instant now = Instant.now();
 
         return Jwts.builder()

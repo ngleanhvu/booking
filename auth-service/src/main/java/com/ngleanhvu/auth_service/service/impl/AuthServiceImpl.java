@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void register(RegisterDto registerDto) throws IOException {
+    public void register(RegisterDto registerDto) throws ResourceNotFoundException, InvalidResourceException, IOException {
         Optional<Auth> optionalEmail = authRepository.findByEmail(registerDto.getEmail());
 
         if (optionalEmail.isPresent()) {
@@ -90,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) throws Exception {
+    public LoginResponse login(LoginRequest loginRequest) throws ResourceNotFoundException, InvalidResourceException {
         Auth auth = authRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("Auth","email", loginRequest.getEmail()));
 
@@ -116,7 +116,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(String refreshToken) throws IOException {
+    public void logout(String refreshToken) {
         String jti = jwtUtil.getJti(refreshToken)
                 .orElseThrow(() -> new InvalidResourceException("Refresh token does not exist"));
 
@@ -137,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String refresh(String refreshToken) throws Exception {
+    public String refresh(String refreshToken)  {
 
         String jti = jwtUtil.getJti(refreshToken)
                 .orElseThrow(() -> new InvalidResourceException("Refresh token does not exist"));

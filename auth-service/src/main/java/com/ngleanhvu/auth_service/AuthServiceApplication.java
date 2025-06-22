@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.ngleanhvu.common.grpc_client",
                                "com.ngleanhvu.common.constant",
+                               "com.ngleanhvu.common.exception",
                                "com.ngleanhvu.common.upload",
                                "com.ngleanhvu.auth_service"})
 @EnableDiscoveryClient
