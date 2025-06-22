@@ -18,6 +18,7 @@ import com.ngleanhvu.common.grpc_client.UserGrpcClient;
 import com.ngleanhvu.common.proto.User;
 import com.ngleanhvu.common.upload.S3Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final AuthRepository authRepository;
@@ -50,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void register(RegisterDto registerDto) throws ResourceNotFoundException, InvalidResourceException, IOException {
+    public void register(RegisterDto registerDto, String userId) throws ResourceNotFoundException, InvalidResourceException, IOException {
         Optional<Auth> optionalEmail = authRepository.findByEmail(registerDto.getEmail());
 
         if (optionalEmail.isPresent()) {
@@ -68,8 +70,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Auth auth = new Auth();
-        String id = UUID.randomUUID().toString();
-        auth.setId(id);
+        auth.setId(userId);
         auth.setEmail(registerDto.getEmail());
         auth.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         auth.setRole(Role.GUEST);
@@ -79,14 +80,19 @@ public class AuthServiceImpl implements AuthService {
 
 
         UserCreationEvent userCreationEvent = new UserCreationEvent();
-        userCreationEvent.setId(id);
+        userCreationEvent.setId(userId);
         userCreationEvent.setEmail(registerDto.getEmail());
         userCreationEvent.setPhone(registerDto.getPhone());
         userCreationEvent.setFullName(registerDto.getFullName());
         userCreationEvent.setAvatarUrl(url);
 
         String json = objectMapper.writeValueAsString(userCreationEvent);
-        kafkaTemplate.send(KafkaConst.USER_CREATED_TOPIC, id, json);
+        kafkaTemplate.send(KafkaConst.USER_CREATED_TOPIC, userId, json)
+                .thenAccept(result -> log.info("User created: {}", result))
+                .exceptionally(ex -> {
+                    log.error("Error while sending user creation event: {}", json, ex);
+                    return null;
+                });
     }
 
     @Override

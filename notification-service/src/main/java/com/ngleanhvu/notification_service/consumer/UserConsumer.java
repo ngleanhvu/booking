@@ -15,7 +15,7 @@ public class UserConsumer {
     private final ObjectMapper objectMapper;
     private final MailService mailService;
 
-    @KafkaListener(topics = KafkaConst.USER_REGISTER_SUCCESS_TOPIC, groupId = KafkaConst.NOTIFICATION_GROUP_ID)
+    @KafkaListener(topics = KafkaConst.MAIL_TOPIC, groupId = KafkaConst.NOTIFICATION_GROUP_ID)
     public void sendEmailRegisteredConfirm(String message) throws JsonProcessingException {
         MailRecord mailRecord = objectMapper.readValue(message, MailRecord.class);
         mailService.send(mailRecord.to(), mailRecord.subject(), mailRecord.body());

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
                                "com.ngleanhvu.common.constant",
                                "com.ngleanhvu.common.exception",
                                "com.ngleanhvu.common.upload",
+                               "com.ngleanhvu.common.async",
                                "com.ngleanhvu.auth_service"})
 @EnableDiscoveryClient
 public class AuthServiceApplication {

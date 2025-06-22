@@ -7,7 +7,7 @@ import com.ngleanhvu.auth_service.dto.RegisterDto;
 import java.io.IOException;
 
 public interface AuthService {
-    void register(RegisterDto registerDto) throws IOException;
+    void register(RegisterDto registerDto, String userId) throws IOException;
     LoginResponse login(LoginRequest loginRequest) throws Exception;
     void logout(String refreshToken);
     String refresh(String refreshToken) ;

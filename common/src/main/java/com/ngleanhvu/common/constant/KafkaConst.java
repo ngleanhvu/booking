@@ -8,4 +8,8 @@ public class KafkaConst {
     public static final String USER_REGISTER_FAILURE_TOPIC = "user-register-failure-topic";
     // notification
     public static final String NOTIFICATION_GROUP_ID = "notification-group-id";
+    // auth
+    public static final String AUTH_GROUP_ID = "auth-group-id";
+    // mail
+    public static final String MAIL_TOPIC = "mail-topic";
 }

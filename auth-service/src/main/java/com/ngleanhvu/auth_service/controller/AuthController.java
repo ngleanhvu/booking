@@ -3,6 +3,7 @@ package com.ngleanhvu.auth_service.controller;
 import com.ngleanhvu.auth_service.dto.*;
 import com.ngleanhvu.auth_service.service.AuthService;
 import com.ngleanhvu.auth_service.util.JwtUtil;
+import com.ngleanhvu.common.async.ResponseFutureManager;
 import com.ngleanhvu.common.exception.InvalidResourceException;
 import com.ngleanhvu.common.exception.ResourceNotFoundException;
 import com.ngleanhvu.common.response.ApiResponse;
@@ -14,6 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -42,10 +47,36 @@ public class AuthController {
     @PostMapping(value = "/register", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<Void>> register(@Valid @ModelAttribute RegisterDto registerDto) throws IOException {
 
-        authService.register(registerDto);
-        ApiResponse<Void> apiResponse = new ApiResponse<>("Create user success",
-                                                            HttpStatus.CREATED.name(), null);
-        return ResponseEntity.ok(apiResponse);
+        String userId = ResponseFutureManager.createFuture();
+        CompletableFuture<String> future = ResponseFutureManager.getFuture(userId);
+
+        try {
+            authService.register(registerDto, userId);
+
+            String result = future.get(20, TimeUnit.SECONDS);
+
+            if ("SUCCESS".equals(result)) {
+                return ResponseEntity.ok(new ApiResponse<>("Create new user success",
+                        HttpStatus.CREATED.name(),
+                        null));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse<>(result,
+                                HttpStatus.INTERNAL_SERVER_ERROR.name(),
+                                null));
+            }
+        } catch (TimeoutException ex) {
+            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                    .body(new ApiResponse<>("Timeout", "TIMEOUT", null));
+        } catch (InvalidResourceException | ResourceNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.name(), null));
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ResponseFutureManager.remove(userId);
+        }
+
     }
 
     @PostMapping("/login")
